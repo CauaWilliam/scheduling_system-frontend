@@ -6,8 +6,6 @@ import { AppointmentsPanel } from '../components/AppointmentsPanel';
 import { AppointmentDetailsModal } from '../components/AppointmentDetailsModal';
 import type { Appointment } from '../types/appointment';
 import { getRandomAppointmentColor } from '../utils/colors';
-import { useMobile } from '../hooks/useMobile';
-
 // Dados de exemplo para demonstração
 const createSampleAppointments = (): Appointment[] => {
   const today = new Date();
@@ -90,7 +88,6 @@ const createSampleAppointments = (): Appointment[] => {
 };
 
 export function HomePage() {
-  const isMobile = useMobile();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [appointments] = useState<Appointment[]>(createSampleAppointments());
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -134,17 +131,18 @@ export function HomePage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header onMenuClick={handleMenuClick} />
 
-        {/* Calendário */}
-        <div className="flex-1 overflow-y-auto">
-          <AnnualCalendar 
-            year={2025}
-            selectedDate={selectedDate || undefined}
-            onDateSelect={handleDateSelect}
-          />
-        </div>
+        {/* Conteúdo principal - Calendário e Painel */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Calendário */}
+          <div className="flex-1 overflow-y-auto">
+            <AnnualCalendar 
+              year={2025}
+              selectedDate={selectedDate || undefined}
+              onDateSelect={handleDateSelect}
+            />
+          </div>
 
-        {/* Painel de agendamentos - apenas no mobile */}
-        {isMobile && (
+          {/* Painel de agendamentos - abaixo do calendário (desktop e mobile) */}
           <AppointmentsPanel
             selectedDate={selectedDate}
             appointments={appointments}
@@ -152,7 +150,7 @@ export function HomePage() {
             onAddAppointment={handleAddAppointment}
             onAppointmentClick={handleAppointmentClick}
           />
-        )}
+        </div>
       </div>
 
       {/* Modal de detalhes do agendamento */}
